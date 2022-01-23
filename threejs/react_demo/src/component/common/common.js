@@ -48,7 +48,9 @@ class Common extends Component {
     }
 
     getRender() {
-        const renderer = new THREE.WebGLRenderer()
+        const renderer = new THREE.WebGLRenderer({ antialias: true })  // antialias是否执行抗锯齿
+        // 设置设备像素比。通常用于避免HiDPI设备上绘图模糊
+        renderer.setPixelRatio(window.devicePixelRatio)
         // 调整渲染颜色范围
         renderer.gammaOutput = true
         renderer.setSize(this.state.width, this.state.height)

@@ -40,8 +40,10 @@ class Model extends Common {
     loaderObj() {
         const gltfLoader = new GLTFLoader()
         gltfLoader.load('models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf', res=> {
+            
                 // console.log(res)  // res.scene是加载头盔的场景
                 res.scene.traverse(mesh => {
+
                     // 背景对所有面进行一一映射
                     if(mesh.isMesh) {
                         // mesh.material.side = THREE.BackSide

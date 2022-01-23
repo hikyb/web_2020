@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="./lib/three.min.js"></script>
+	<script src="./lib/OrbitControls.js"></script>
+</head>
+<body>
+	<canvas id="three-canvas"></canvas>
+	<script>
+		let width = window.innerWidth
+        let height = window.innerHeight
+        const canvas = document.querySelector("#three-canvas")
+		
+        const scene = new THREE.Scene()
+
+		const geometry = new THREE.Geometry()
+
+        let p1 = new THREE.Vector3(0, 0, 0)
+        let p2 = new THREE.Vector3(2, 0, 0)
+        let p3 = new THREE.Vector3(2, 1, 0)
+        let p4 = new THREE.Vector3(0, 1, 0)
+		geometry.vertices.push(p1, p2, p3, p4)
+		
+		let normal = new THREE.Vector3(0, 0, 1)
+		let face0 = new THREE.Face3(0, 1, 2, normal)
+		let face1 = new THREE.Face3(0, 2, 3, normal)
+		geometry.faces.push( face0, face1 )
+
+		let t0 = new THREE.Vector2(0, 0)
+		let t1 = new THREE.Vector2(1, 0)
+		let t2 = new THREE.Vector2(1, 0.5)
+		let t3 = new THREE.Vector2(0, 0.5)
+		let t4 = new THREE.Vector2(1, 1)
+		let t5 = new THREE.Vector2(0, 1)
+		let uv1 = [t0, t1, t2]
+		let uv2 = [t0, t2, t3]
+		let uv3 = [t3, t2, t4]
+		let uv4 = [t3, t4, t5]
+		geometry.faceVertexUvs[0].push(uv1, uv2, uv3, uv4)
+		console.log(geometry)
+
+		let textureLoader = new THREE.TextureLoader()
+		let texture = textureLoader.load('./static/textures/brick_diffuse.jpg')
+		let material = new THREE.MeshBasicMaterial({
+			map: texture
+		})
+		// 材料数组
+		let MeshFaceMaterial = new THREE.MeshFaceMaterial( [material] )
+
+		const mesh = new THREE.Mesh(geometry, MeshFaceMaterial)
+		scene.add(mesh)
+
+        const camera = new THREE.PerspectiveCamera(75, width/height, 0.01, 10000)
+        camera.position.z = 12
+        camera.lookAt(0,0,0)
+
+		const control = new THREE.OrbitControls(camera)
+
+        const renderer = new THREE.WebGLRenderer({canvas})
+        renderer.setSize(width, height)
+
+        function animation() {
+            requestAnimationFrame(animation)
+
+            renderer.render(scene, camera)
+        }
+        animation()
+	</script>
+</body>
+</html>

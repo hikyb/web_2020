@@ -6,6 +6,7 @@
     <title>three.js01</title>
     <script src="./lib/three.min.js"></script>
     <script src="./lib/OrbitControls.js"></script>
+    <script src="./lib/stats.js"></script>
     <style>
         * {
             margin: 0;
@@ -19,16 +20,19 @@
     <canvas id="three-canvas"></canvas>
 
     <script>
+        let myStats = new Stats()
+        document.querySelector("body").appendChild(myStats.domElement)
+        
         // 初始化
         let width = window.innerWidth, 
-            height = window.innerHeight
+        height = window.innerHeight
         const canvas = document.querySelector("#three-canvas")
         window.onload = resize
         window.onresize = resize
 
         function resize() {
             canvas.width = width
-            canvas.height = width
+            canvas.height = height
             renderer.setSize(width, height)
             // 更新相机宽高比
             camera.aspect = width/height
@@ -69,6 +73,8 @@
             control.update()
             // 将场景被相机拍摄到的内容渲染出来
             renderer.render(scene, camera)
+
+            myStats.update()
         }
         animation()
     </script>

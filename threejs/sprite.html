@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>sprite</title>
+	<script src="./lib/three.min.js"></script>
+    <script src="./lib/OrbitControls.js"></script>
+    <script src="./lib/stats.js"></script>
+	<style>
+		* {
+            margin: 0;
+        }
+        body {
+            overflow: hidden;
+        }
+	</style>
+</head>
+<body>
+	<canvas id="three-canvas1"></canvas>
+	
+	<script>
+		let myStats = new Stats()
+        document.querySelector("body").appendChild(myStats.domElement)
+
+		// 初始化
+        let width = window.innerWidth, 
+        height = window.innerHeight
+        const canvas = document.querySelector("#three-canvas1")
+        window.onload = resize
+        window.onresize = resize
+
+        function resize() {
+            canvas.width = width
+            canvas.height = height
+            renderer.setSize(width, height)
+            // 更新相机宽高比
+            camera.aspect = width/height
+            // 新的比例应用到世界坐标系中
+            camera.updateProjectionMatrix()
+        }
+		// 创建场景
+        const scene = new THREE.Scene()
+
+
+
+		function drawCanvas ({text, width, height}) {
+			const canvas = document.createElement('canvas')
+			canvas.width = width
+			canvas.height = height
+			const context = canvas.getContext('2d')
+			context.font = '40px Microsoft YaHei';
+			context.fillStyle = '#ffffff';
+			context.fillText(text, 0, 40)
+			return canvas
+		}
+		// sprite精灵
+		// 1.普通精灵
+		const spriteMaterial = new THREE.SpriteMaterial()
+        const sprite = new THREE.Sprite( spriteMaterial )
+		// sprite.position.set(-2, 1, 0)
+		// sprite.scale.set(1, 2, 1)
+		// scene.add(sprite)
+
+		// 2.图片导入方式
+		const spriteMap = new THREE.TextureLoader().load(drawCanvas({ text: "o", width:64, height: 64 }).toDataURL())
+		// spriteMap.needsUpdate = true
+		const spriteMaterial2 = new THREE.SpriteMaterial({ map: spriteMap  })
+		const sprite2 = new THREE.Sprite( spriteMaterial2 )
+		sprite2.position.x = 2
+		scene.add(sprite2)
+
+
+		// 3.canvas导入方式
+		const canvas2 = drawCanvas({ text: '圆柱体', width:140, height:120 })
+		const spriteMapCube = new THREE.Texture(canvas2)
+		spriteMapCube.wrapS = THREE.RepeatWrapping  // 这个值定义了纹理贴图在水平方向上将如何包裹
+		spriteMapCube.wrapT = THREE.RepeatWrapping  // 这个值定义了纹理贴图在垂直方向上将如何包裹
+		spriteMapCube.needsUpdate = true
+		const spriteCube = new THREE.Sprite( new THREE.SpriteMaterial({ map: spriteMapCube, color: 0xffffff }) )
+		spriteCube.center.set(0.5, 0)
+        const box = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.8, 20, 1, false), new THREE.MeshNormalMaterial())
+		scene.add(spriteCube)
+		scene.add(box)
+
+
+		// points粒子
+		// 球体
+		const sphereGeometry = new THREE.SphereGeometry( 3, 10, 10 )  // 球
+		const sphereMaterial = new THREE.PointsMaterial({ color: 0xff00ff, size: 10, sizeAttenuation: false })  // size属性设置粒子的大小 sizeAttenuation属性设置粒子不产生近大远小的效果
+		// sphereMaterial.lights = true  // 默认粒子不受光照影响，开启受光照影响
+		const sphere = new THREE.Points( sphereGeometry, sphereMaterial )
+		// scene.add(sphere)
+
+		// 星空
+		const starsGeometry = new THREE.Geometry()
+		for( let i=0; i< 5000; i++) {
+			let star = new THREE.Vector3()
+			// THREE.Math.randFloatSpread 在区间 -range/2 到 range/2 随机一个浮点数
+			star.x = THREE.Math.randFloatSpread(800)
+			star.y = THREE.Math.randFloatSpread(800)
+			star.y = THREE.Math.randFloatSpread(800)
+			starsGeometry.vertices.push(star)
+		}
+		const starsMaterial = new THREE.PointsMaterial({ color: 0x888888 })
+		const starField = new THREE.Points( starsGeometry, starsMaterial )
+		starField.position.z = -50
+		scene.add( starField )
+
+
+
+
+		// 透视相机
+        const camera = new THREE.PerspectiveCamera(75, width/height, 0.01, 10000)
+        // 相机摆放: 相机位置,相机朝向
+        camera.position.z = 8
+        camera.lookAt(0,0,0)
+
+        const control = new THREE.OrbitControls(camera)
+		control.target.set(2,0,0)
+
+        // 渲染器在构造的时候, 是链接canvas的
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha:false })
+        renderer.setSize(width, height)
+
+		// 动画模块
+        function animation() {
+            requestAnimationFrame(animation)
+            // 更新控制器
+            control.update()
+            // 将场景被相机拍摄到的内容渲染出来
+            renderer.render(scene, camera)
+
+            myStats.update()
+        }
+        animation()
+	</script>
+</body>
+</html>

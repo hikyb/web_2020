@@ -40,7 +40,7 @@
             // 加载各个面
             const worldBg = loader.setPath("./static/textures/cube/Park2/")
                 .load([
-                "posx.jpg",
+                    "posx.jpg",
                     "negx.jpg",
                     "posy.jpg",
                     "negy.jpg",
@@ -70,10 +70,10 @@
         const texture = new THREE.TextureLoader().load("./static/textures/brick_diffuse.jpg")
         const materialList = []
         materialList.push(new THREE.MeshBasicMaterial({wireframe: true}))
-        materialList.push(new THREE.MeshNormalMaterial({flatShading: true}))
-        materialList.push(new THREE.MeshLambertMaterial({map: texture}))
+        materialList.push(new THREE.MeshNormalMaterial({flatShading: true}))  // flatShading 定义材质是否使用平面着色进行渲染。默认值为false
+        materialList.push(new THREE.MeshLambertMaterial({map: texture}))      // map-颜色贴图 | envMap-环境贴图
         materialList.push(new THREE.MeshDepthMaterial({map: texture}))
-        materialList.push(new THREE.MeshToonMaterial({gradientMap: texture}))
+        materialList.push(new THREE.MeshToonMaterial({gradientMap: texture}))  // 卡通着色的渐变贴图
         materialList.push(new THREE.MeshPhongMaterial({flatShading: true, envMap: scene.background}))
         for(let i=0; i<materialList.length; i++) {
             addMesh(materialList[i], i)

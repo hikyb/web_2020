@@ -17,11 +17,14 @@
 </head>
 <body>
     <canvas id="three-canvas"></canvas>
-    
     <script>
+        // chrome禁止了自动播放, 必须在用户交互后才能进行
         let video = document.createElement("video")
         video.src = "./static/textures/sintel.mp4"
-        video.autoplay = true
+        video.autoplay = false
+        video.loop = false
+        video.preload = "auto"  // 视频在页面加载时进行加载，并预备播放。如果使用 "autoplay"，则忽略该属性
+        // video.load()            // load() 方法重新加载音频/视频元素。用于在更改来源或其他设置后对音频/视频元素进行更新
 
         // 初始化
         let width = window.innerWidth
@@ -42,6 +45,8 @@
 
         // 获取一个平面
         function getPlane() {
+            video.play()
+
             // const geometry = new THREE.BoxGeometry(1, 1, 1)
             const geometry = new THREE.PlaneGeometry(2, 2)
             // MeshNormalMaterial 根据面方向染色的一种材质
